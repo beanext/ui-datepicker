@@ -6,9 +6,13 @@
     "Ethan Zhao"
   ],
   "main": [
-    "dist/*"
+    "dist/**"
   ],
-  "ignore": [],
+  "ignore": [
+    "**/.*",
+    "test",
+    "example"
+  ],
   "version": "0.0.1",
   "dependencies": {
     "angular": "^1.4.0"
