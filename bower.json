@@ -6,8 +6,8 @@
     "Ethan Zhao"
   ],
   "main": [
-    "src/beanext-ui-datepicker.js",
-    "lib/WdatePicker.js"
+    "dist/beanext-ui-datepicker.js",
+    "dist/datepicker/WdatePicker.js"
   ],
   "ignore": [
     "**/.*",

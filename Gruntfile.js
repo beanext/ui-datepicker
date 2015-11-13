@@ -93,6 +93,7 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/{,*/}*',
             '!<%= yeoman.dist %>/.git{,*/}*',
             '<%= yeoman.example %>/scripts/lib',
+            '<%= yeoman.example %>/scripts/beanext-ui-datepicker.js',
             '<%= yeoman.example %>/scripts/beanext-ui-datepicker.min.js'
           ]
         }]
@@ -161,7 +162,7 @@ module.exports = function (grunt) {
           expand: true,
           dot: true,
           cwd: 'lib/',
-          dest: '<%= yeoman.dist %>/lib/datepicker/',
+          dest: '<%= yeoman.dist %>/datepicker/',
           src: [
             '**'
           ]
@@ -182,7 +183,7 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.dist %>',
           dest: '<%= yeoman.example %>/scripts/',
           src: [
-            '{,*/}*.*'
+            '*.js'
           ]
         },{
           expand: true,
