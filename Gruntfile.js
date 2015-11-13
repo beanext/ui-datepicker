@@ -18,9 +18,7 @@ module.exports = function (grunt) {
 
   // Configurable paths for the application
   var appConfig = {
-    app: require('./bower.json').appPath || 'app',
-    dist: 'dist',
-    example: 'example'
+    dist: 'dist'
   };
 
   // Define the configuration for all the tasks
@@ -32,11 +30,10 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep']
+        files: ['bower.json']
       },
       js: {
-        files: ['<%= yeoman.app %>/src/{,*/}*.js'],
+        files: ['src/{,*/}*.js'],
         tasks: ['newer:jshint:all', 'newer:jscs:all']
       },
       jsTest: {
@@ -57,7 +54,7 @@ module.exports = function (grunt) {
       all: {
         src: [
           'Gruntfile.js',
-          '<%= yeoman.app %>/src/{,*/}*.js'
+          'src/{,*/}*.js'
         ]
       },
       test: {
@@ -77,7 +74,7 @@ module.exports = function (grunt) {
       all: {
         src: [
           'Gruntfile.js',
-          '<%= yeoman.app %>/src/{,*/}*.js'
+          'src/{,*/}*.js'
         ]
       },
       test: {
@@ -94,7 +91,6 @@ module.exports = function (grunt) {
             '.tmp',
             '<%= yeoman.dist %>/{,*/}*',
             '!<%= yeoman.dist %>/.git{,*/}*',
-            '<%= yeoman.example %>/{,*/}*'
           ]
         }]
       },
@@ -103,7 +99,7 @@ module.exports = function (grunt) {
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
-        javascriptsDir: '<%= yeoman.app %>/src',
+        javascriptsDir: 'src',
         relativeAssets: false,
         assetCacheBuster: false,
         raw: 'Sass::Script::Number.precision = 10\n'
@@ -147,19 +143,13 @@ module.exports = function (grunt) {
     uglify: {
       dist: {
         files: [{
-          src: '<%= yeoman.app %>/src/beanext-ui-datepicker.js',
+          src: 'src/beanext-ui-datepicker.js',
           dest: '<%= yeoman.dist %>/beanext-ui-datepicker.min.js'
         }]
       }
     },
     concat: {
       dist: {},
-      example: {
-        files: [{
-          src:'<%= yeoman.app %>/scripts/{,*/}*.js',
-          dest: '<%= yeoman.example %>/scripts/demo.js'
-        }]
-      }
     },
 
     copy: {
@@ -167,45 +157,10 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           dot: true,
-          cwd: '<%= yeoman.app %>/lib/',
+          cwd: 'lib/',
           dest: '<%= yeoman.dist %>/lib/datepicker/',
           src: [
             '**'
-          ]
-        }]
-      },
-      example: {
-        files: [{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.dist %>',
-          dest: '<%= yeoman.example %>/scripts/',
-          src: [
-            '{,*/}*.*'
-          ]
-        },{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>/lib/',
-          dest: '<%= yeoman.example %>/scripts/lib/datepicker/',
-          src: [
-            '**'
-          ]
-        },{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>',
-          dest: '<%= yeoman.example %>',
-          src: [
-            'demo.html'
-          ]
-        },{
-          expand: true,
-          dot: true,
-          cwd: '<%= yeoman.app %>/../bower_components/angular/',
-          dest: '<%= yeoman.example %>/scripts/lib/angular/',
-          src: [
-            'angular.min.js'
           ]
         }]
       }
@@ -244,7 +199,6 @@ module.exports = function (grunt) {
     'uglify',
     'usemin',
     //'filerev'
-    'copy:example'
   ]);
 
   grunt.registerTask('default', [
