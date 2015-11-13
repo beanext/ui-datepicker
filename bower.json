@@ -1,5 +1,13 @@
 {
   "name": "ui-datepicker",
+  "homepage": "https://github.com/beanext/ui-datepicker",
+  "authors": [
+    "Michael Qian",
+    "Ethan Zhao"
+  ],
+  "main": [
+    "dist/*"
+  ],
   "version": "0.0.1",
   "dependencies": {
     "angular": "^1.4.0"
