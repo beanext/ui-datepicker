@@ -18,7 +18,8 @@ module.exports = function (grunt) {
 
   // Configurable paths for the application
   var appConfig = {
-    dist: 'dist'
+    dist: 'dist',
+    example: 'example'
   };
 
   // Define the configuration for all the tasks
@@ -91,9 +92,11 @@ module.exports = function (grunt) {
             '.tmp',
             '<%= yeoman.dist %>/{,*/}*',
             '!<%= yeoman.dist %>/.git{,*/}*',
+            '<%= yeoman.example %>/scripts/lib',
+            '<%= yeoman.example %>/scripts/beanext-ui-datepicker.min.js'
           ]
         }]
-      },
+      }
     },
 
     // Compiles Sass to CSS and generates necessary files if requested
@@ -163,6 +166,33 @@ module.exports = function (grunt) {
             '**'
           ]
         }]
+      },
+      example: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= yeoman.dist %>',
+          dest: '<%= yeoman.example %>/scripts/',
+          src: [
+            '{,*/}*.*'
+          ]
+        },{
+          expand: true,
+          dot: true,
+          cwd: 'lib/',
+          dest: '<%= yeoman.example %>/scripts/lib/datepicker/',
+          src: [
+            '**'
+          ]
+        },{
+          expand: true,
+          dot: true,
+          cwd: 'bower_components/angular/',
+          dest: '<%= yeoman.example %>/scripts/lib/angular/',
+          src: [
+            'angular.min.js'
+          ]
+        }]
       }
     },
 
@@ -199,6 +229,7 @@ module.exports = function (grunt) {
     'uglify',
     'usemin',
     //'filerev'
+    'copy:example'
   ]);
 
   grunt.registerTask('default', [

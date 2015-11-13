@@ -8,4 +8,4 @@
  *
  * Main module of the application.
  */
-angular.module('uiDatepickerApp', []).controller("uiDatepickerCtrl",angular.noop);
+angular.module('uiDatepickerApp', ['bui.datepicker']).controller('uiDatepickerCtrl',angular.noop);
