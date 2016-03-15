@@ -12,10 +12,14 @@
 if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
   module.exports = 'bui.datepicker';
 }
-angular.module('bui.datepicker', []).directive('buiDatepicker', function () {
+angular.module('bui.datepicker', []).directive('buiDatepicker', ['$parse', function ($parse) {
   return {
     restrict: 'A',
     require: '?ngModel',
+    scope: {
+      minDateFunc: '&?',
+      maxDateFunc: '&?'
+    },
     link: function (scope, element, attr, ngModel) {
       ngModel = ngModel || {
           '$setViewValue': angular.noop
@@ -48,8 +52,14 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', function () {
         if (attr.maxDate) {
           options.maxDate = attr.maxDate;
         }
+        if (attr.minDateFunc) {
+          options.minDate = scope.minDateFunc();
+        }
+        if (attr.maxDateFunc) {
+          options.maxDate = scope.maxDateFunc();
+        }
         window.WdatePicker(options);
       });
     }
   };
-});
+}]);
