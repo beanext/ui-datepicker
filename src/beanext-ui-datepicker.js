@@ -12,7 +12,7 @@
 if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
   module.exports = 'bui.datepicker';
 }
-angular.module('bui.datepicker', []).directive('buiDatepicker', ['$parse', function ($parse) {
+angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
   return {
     restrict: 'A',
     require: '?ngModel',
@@ -30,6 +30,21 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', ['$parse', funct
         element.before(feedEL);
       }
       element.attr('readOnly', 'readOnly');
+      element.bind('change', function () {
+        scope.$apply(function () {
+          ngModel.$setViewValue(element.val());
+        });
+      });
+
+      var changeVal = function (dp) {
+        var date = dp.cal.getNewDateStr();
+        scope.$apply(function () {
+          ngModel.$setViewValue(date);
+        });
+      };
+      var valueChanged = function () {
+        return changeVal(window.$dp);
+      };
       element.bind('click', function () {
         var options = {
           oncleared: function () {
@@ -37,12 +52,13 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', ['$parse', funct
               ngModel.$setViewValue('');
             });
           },
-          onpicked: function (dp) {
-            var date = dp.cal.getNewDateStr();
-            scope.$apply(function () {
-              ngModel.$setViewValue(date);
-            });
-          },
+          onpicked: changeVal,
+          dchanged: valueChanged,
+          Mchanged: valueChanged,
+          ychanged: valueChanged,
+          Hchanged: valueChanged,
+          mchanged: valueChanged,
+          schanged: valueChanged,
           skin: 'ext',
           dateFmt: attr.dateFmt || 'yyyy-MM-dd',
         };
@@ -58,6 +74,8 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', ['$parse', funct
         if (attr.maxDateFunc) {
           options.maxDate = scope.maxDateFunc();
         }
+
+        console.log(options);
         window.WdatePicker(options);
       });
     }
