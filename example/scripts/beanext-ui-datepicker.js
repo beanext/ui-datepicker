@@ -74,8 +74,6 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
         if (attr.maxDateFunc) {
           options.maxDate = scope.maxDateFunc();
         }
-
-        console.log(options);
         window.WdatePicker(options);
       });
     }

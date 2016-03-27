@@ -21,7 +21,7 @@
     "GruntFile.js",
     "package.json"
   ],
-  "version": "0.0.4",
+  "version": "0.0.6",
   "dependencies": {
     "angular": "^1.4.0"
   },
