@@ -12,29 +12,22 @@
 if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
   module.exports = 'bui.datepicker';
 }
-angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
+
+angular.module('bui.datepicker', []).directive('buiDatepicker', ['$compile', '$parse', function ($compile, $parse) {
   return {
-    restrict: 'A',
+    restrict: 'AE',
     require: '?ngModel',
-    scope: {
-      minDateFunc: '&?',
-      maxDateFunc: '&?'
-    },
+    template: '<bui-datepicker-container></bui-datepicker-container>',
+    replace: true,
     link: function (scope, element, attr, ngModel) {
-      ngModel = ngModel || {
-          '$setViewValue': angular.noop
-        };
-      if (element.hasClass('form-control')) {
-        var feedEL = '<span class="fa fa-calendar fa-lg form-control-feedback" style="padding-top: 10px;"></span>';
-        element.parent().addClass('has-feedback');
-        element.before(feedEL);
-      }
-      element.attr('readOnly', 'readOnly');
-      element.bind('change', function () {
-        scope.$apply(function () {
-          ngModel.$setViewValue(element.val());
+      var SNAKE_CASE_REGEXP = /[A-Z]/g;
+      ngModel = ngModel ? ngModel : {'$setViewValue': angular.noop}
+      function snake_case(name, separator) {
+        separator = separator || '_';
+        return name.replace(SNAKE_CASE_REGEXP, function (letter, pos) {
+          return (pos ? separator : '') + letter.toLowerCase();
         });
-      });
+      }
 
       var changeVal = function (dp) {
         var date = dp.cal.getNewDateStr();
@@ -45,37 +38,109 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
       var valueChanged = function () {
         return changeVal(window.$dp);
       };
-      element.bind('click', function () {
-        var options = {
-          oncleared: function () {
-            scope.$apply(function () {
-              ngModel.$setViewValue('');
-            });
-          },
-          onpicked: changeVal,
-          dchanged: valueChanged,
-          Mchanged: valueChanged,
-          ychanged: valueChanged,
-          Hchanged: valueChanged,
-          mchanged: valueChanged,
-          schanged: valueChanged,
-          skin: 'ext',
-          dateFmt: attr.dateFmt || 'yyyy-MM-dd',
-        };
-        if (attr.minDate) {
-          options.minDate = attr.minDate;
+
+      var config = {
+        oncleared: function () {
+          scope.$apply(function () {
+            ngModel.$setViewValue('');
+          });
+        },
+        onpicked: changeVal,
+        dchanged: valueChanged,
+        Mchanged: valueChanged,
+        ychanged: valueChanged,
+        Hchanged: valueChanged,
+        mchanged: valueChanged,
+        schanged: valueChanged,
+        skin: 'ext',
+        dateFmt: 'yyyy-MM-dd'
+      };
+      if (attr.dateFmt) {
+        try {
+          config.dateFmt = $parse(attr.dateFmt)(scope);
+        } catch (e) {
         }
-        if (attr.maxDate) {
-          options.maxDate = attr.maxDate;
+        if (!angular.isString(config.dateFmt)) {
+          config.dateFmt = attr.dateFmt;
         }
-        if (attr.minDateFunc) {
-          options.minDate = scope.minDateFunc();
+      }
+      angular.forEach(['minDate', 'maxDate'], function (prop) {
+        if (attr[prop]) {
+          var propVal = attr[prop];
+          config[prop] = {};
+          try {
+            config[prop].value = $parse(propVal)(scope);
+            config[prop].varible = propVal;
+          } catch (e) {
+            config[prop].value=propVal;
+          }
+          if(config[prop].value === undefined) {
+            config[prop].value = "";
+          }
         }
-        if (attr.maxDateFunc) {
-          options.maxDate = scope.maxDateFunc();
-        }
-        window.WdatePicker(options);
+        console.log(prop, attr[prop], config[prop])
       });
+
+      var repaintInput = function (newVal, val) {
+        console.log(111111111)
+        var input = angular.element("<input type='text'/>");
+        var div = angular.element("<div></div>");
+        div.append(input);
+        for (var a in attr) {
+          if (a !== 'buiDatepicker') {
+            try {
+              input.attr(snake_case(a, '-'), attr[a]);
+            } catch (e) {
+            }
+          }
+        }
+        input = $compile(div.html())(scope);
+        element.empty();
+        element.append(input);
+        input.bind('change', function () {
+          scope.$apply(function () {
+            ngModel.$setViewValue(input.val());
+          });
+        });
+
+        input.bind('click', function () {
+          var options = {};
+          var refresh;
+          for(var name in config) {
+            if(angular.isObject(config[name])){
+              if(config[name].varible){
+                var newVal;
+                try {
+                  newVal = $parse(config[name].varible)
+                } catch(e){}
+                if(config[name].value !== newVal) {
+                  refresh = true;
+                  config[name].value = newVal;
+                }
+              } else {
+                if(config[name].value!==undefined) {
+                  options[name] = config[name].value;
+                } else {
+                  options[name] = config[name];
+                }
+              }
+            } else {
+              options[name] = config[name];
+            }
+          }
+          window.WdatePicker(options);
+        });
+
+        input.attr('readOnly', 'readOnly');
+        if (element.hasClass('form-control')) {
+          var feedEL = '<span class="fa fa-calendar fa-lg form-control-feedback" style="padding-top: 10px;"></span>';
+          element.removeClass('form-control').parent().addClass('has-feedback')
+          input.addClass('form-control')
+          input.before(feedEL);
+        }
+
+      }
+      scope.$watch(config, repaintInput, true);
     }
   };
 }]);
