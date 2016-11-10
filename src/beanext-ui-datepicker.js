@@ -39,7 +39,14 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', ['$compile', '$p
         return changeVal(window.$dp);
       };
 
+      var showClear = attr.showClear ? attr.showClear === 'true' : true;
+      var showOk = attr.showOk? attr.showOk === 'true' : true;
+      var showToday = attr.showToday? attr.showToday === 'true' : true;
+
       var config = {
+        isShowClear:showClear,
+        isShowOk:showOk,
+        isShowToday:showToday,
         oncleared: function () {
           scope.$apply(function () {
             ngModel.$setViewValue('');
@@ -78,11 +85,9 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', ['$compile', '$p
             config[prop].value = "";
           }
         }
-        console.log(prop, attr[prop], config[prop])
       });
 
       var repaintInput = function (newVal, val) {
-        console.log(111111111)
         var input = angular.element("<input type='text'/>");
         var div = angular.element("<div></div>");
         div.append(input);
