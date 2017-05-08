@@ -18,7 +18,8 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
     require: '?ngModel',
     scope: {
       minDateFunc: '&?',
-      maxDateFunc: '&?'
+      maxDateFunc: '&?',
+      lang: '=?'
     },
     link: function (scope, element, attr, ngModel) {
       ngModel = ngModel || {
@@ -80,6 +81,9 @@ angular.module('bui.datepicker', []).directive('buiDatepicker', [function () {
         if (attr.maxDateFunc) {
           options.maxDate = scope.maxDateFunc();
         }
+	if(scope.lang){
+	  options.lang = scope.lang;
+	}
         window.WdatePicker(options);
       });
     }
